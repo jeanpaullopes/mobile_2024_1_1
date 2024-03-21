@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import br.edu.uniritter.aula224_1.services.UserServices;
+
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener{
 
     @Override
@@ -32,6 +34,8 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
             Toast.makeText(this, "Clicou no botão 2", Toast.LENGTH_LONG).show();
             Snackbar.make(view, "Clicou no botão 2", Snackbar.LENGTH_LONG).show();
         });
+
+        UserServices.loadUsersToRepository(this);
 
     }
 
