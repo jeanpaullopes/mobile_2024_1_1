@@ -1,6 +1,9 @@
 package br.edu.uniritter.aula224_1;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,8 +24,11 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
+import br.edu.uniritter.aula224_1.adapters.UserAdapter;
+import br.edu.uniritter.aula224_1.adapters.UserAdapter2;
 import br.edu.uniritter.aula224_1.models.User;
 import br.edu.uniritter.aula224_1.repositories.UserRepository;
 import br.edu.uniritter.aula224_1.services.UserServices;
@@ -33,22 +39,32 @@ public class SecondActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent  = getIntent();
-        setContentView(R.layout.activity_second);
-        TextView tv = findViewById(R.id.textoCentral);
-        tv.setText(intent.getStringExtra("dado"));
+        setContentView(R.layout.activity_second_rv);
+        RecyclerView rv = findViewById(R.id.rv1);
+        UserAdapter userAdapter = new UserAdapter(UserRepository.getInstance().getAllUsers());
+        ArrayList<User> lista = new ArrayList<>();
+        lista.addAll(UserRepository.getInstance().getAllUsers());
+        lista.addAll(UserRepository.getInstance().getAllUsers());
+        lista.addAll(UserRepository.getInstance().getAllUsers());
+        lista.addAll(UserRepository.getInstance().getAllUsers());
 
-        tv.setOnClickListener(v->{
-            LinearLayout ll = findViewById(R.id.layoutVertical);
-            for (int i = 1; i <= 10; i++) {
-                TextView tv2 = new TextView(this);
-                tv2.setText("Linha " + i);
-                EditText ed = new EditText(this);
-                ed.setHint("Digite algo");
+        UserAdapter2 adp2 = new UserAdapter2(lista);
+        findViewById(R.id.button3).setOnClickListener((v)->{
+            if (rv.getAdapter() == userAdapter)
+                rv.setAdapter(adp2);
+            else
+                rv.setAdapter(userAdapter);
 
-                ll.addView(tv2);
-                ll.addView(ed);
-            }
         });
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        LinearLayoutManager llmH = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        StaggeredGridLayoutManager sglm = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        rv.setLayoutManager(llm);
+        rv.setAdapter(userAdapter);
+
+
+
+
 
     }
     @Override
@@ -58,8 +74,7 @@ public class SecondActivity extends AppCompatActivity {
       for (User u :UserRepository.getInstance().getAllUsers() ) {
             nomes += u.getName() + "\n";
         }
-        TextView tv = findViewById(R.id.textoCentral);
-        tv.setText(nomes);
+
 
     }
 }

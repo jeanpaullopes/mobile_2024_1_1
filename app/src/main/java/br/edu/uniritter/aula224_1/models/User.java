@@ -1,6 +1,11 @@
 package br.edu.uniritter.aula224_1.models;
 
-public class User {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class User implements Parcelable {
     private int id;
     private String name;
     private String username;
@@ -24,6 +29,27 @@ public class User {
         this.phone = phone;
         this.website = website;
     }
+
+    protected User(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        username = in.readString();
+        email = in.readString();
+        phone = in.readString();
+        website = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -71,5 +97,21 @@ public class User {
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeInt(this.id);
+        parcel.writeString(this.name);
+        parcel.writeString(this.username);
+        parcel.writeString(this.email);
+        parcel.writeString(this.phone);
+        parcel.writeString(this.website);
+
     }
 }
