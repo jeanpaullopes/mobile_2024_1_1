@@ -1,8 +1,7 @@
 package br.edu.uniritter.aula224_1.services;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -10,51 +9,56 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import br.edu.uniritter.aula224_1.R;
+import br.edu.uniritter.aula224_1.models.Post;
 import br.edu.uniritter.aula224_1.models.User;
+import br.edu.uniritter.aula224_1.repositories.PostRepository;
 import br.edu.uniritter.aula224_1.repositories.UserRepository;
 
-public class UserServices {
+public class PostServices {
 
-    public static User createUserFromJson(JSONObject json) {
-        User user = new User();
+    public static Post createPostFromJson(JSONObject json) throws ElementCreateException {
+
+        User u = null;
         try {
-            user.setId(json.getInt("id"));
-            user.setName(json.getString("name"));
-            user.setUsername(json.getString("username"));
-            user.setEmail(json.getString("email"));
-            user.setPhone(json.getString("phone"));
-            user.setWebsite(json.getString("website"));
-        } catch (Exception e) {
-            return null;
+            u = UserRepository.getInstance().getUser(json.getInt("userId"));
+
+        return new Post(
+                u,
+                json.getInt("id"),
+                json.getString("title"),
+                json.getString("body"));
+        } catch (JSONException e) {
+            ElementCreateException exception = new ElementCreateException("Erro ao criar post: "+e.getMessage());
+            throw exception;
         }
-        return user;
     }
 
-    public static void loadUsersFromRepository(Context context) {
+    public static void loadPostFromRepository(Context context) {
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url2 = "https://jsonplaceholder.typicode.com/users";
+        String url2 = "https://jsonplaceholder.typicode.com/posts";
         JsonArrayRequest jarrRequest = new JsonArrayRequest(Request.Method.GET, url2,null,
                 new Response.Listener<org.json.JSONArray>() {
                     @Override
                     public void onResponse(org.json.JSONArray response) {
-                        UserRepository repo = UserRepository.getInstance();
+                        PostRepository repo = PostRepository.getInstance();
                         for (int i = 0; i < response.length(); i++) {
                             try {
                                 JSONObject obj = response.getJSONObject(i);
-                                User user = UserServices.createUserFromJson(obj);
-                                if (user != null) {
-                                    repo.addUser(user);
-                                }
+                                Post post = PostServices.createPostFromJson(obj);
+                                repo.add(post);
+
+                            } catch (ElementCreateException e) {
+                                e.printStackTrace();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
-                        PostServices.loadPostFromRepository(context);
+                        Toast.makeText(context, "Posts carregados: "+repo.getAll().size(), Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {

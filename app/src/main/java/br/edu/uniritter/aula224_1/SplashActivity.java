@@ -35,7 +35,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
             Snackbar.make(view, "Clicou no botão 2", Snackbar.LENGTH_LONG).show();
         });
 
-        UserServices.loadUsersToRepository(this);
+        UserServices.loadUsersFromRepository(this);
 
     }
 
