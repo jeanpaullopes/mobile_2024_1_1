@@ -1,6 +1,7 @@
 package br.edu.uniritter.aula224_1;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import br.edu.uniritter.aula224_1.databinding.ActivitySplashBinding;
+import br.edu.uniritter.aula224_1.models.Post;
 import br.edu.uniritter.aula224_1.services.UserServices;
 
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener{
@@ -17,11 +20,17 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        //setContentView(R.layout.activity_splash);
+        ActivitySplashBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
+
+        Post p = new Post(null,1, "Titulo", "Corpo do post.");
+        binding.setPost(p);
+        binding.setActivity(this);
+
         Button btn = findViewById(R.id.buttonOK);
 
 
-        btn.setOnClickListener(this);
+
 
         btn.setOnClickListener(view -> {
             Intent intent = new Intent(this, SecondActivity.class);
