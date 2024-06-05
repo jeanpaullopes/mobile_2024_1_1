@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -26,7 +27,14 @@ public interface ClienteDAO {
     @Insert
     void insertAll(Cliente... clientes);
 
+    @Insert
+    void insert(Cliente cliente);
+    // insert into Cliente (fantasia, razao, cnpj, telefone, email) values (cliente.nomeFatasia, 'Razao', '12345678901234', '51999999999')
+
     @Delete
     void delete(Cliente cliente);
+
+    @Update
+    void update(Cliente cliente);
 
 }

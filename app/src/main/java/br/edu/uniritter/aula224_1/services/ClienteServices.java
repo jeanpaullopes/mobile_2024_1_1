@@ -5,9 +5,12 @@ import android.content.Context;
 import androidx.room.Room;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import br.edu.uniritter.aula224_1.database.AppDatabase;
 import br.edu.uniritter.aula224_1.database.Cliente;
+import br.edu.uniritter.aula224_1.database.RoomSelectListListener;
+
 
 public class ClienteServices {
 
@@ -23,11 +26,29 @@ public class ClienteServices {
         return instance;
     }
 
-    public static List<Cliente> getAll() {
-        return db.clienteDAO().getAll();
+    public static void getAll(RoomSelectListListener listener) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+             List<Cliente> clientes = db.clienteDAO().getAll();
+             if (listener != null) {
+                 listener.onSelectAllComplete(clientes);
+             }
+        });
     }
 
     public static void insert(Cliente cliente) {
-        db.clienteDAO().insertAll(cliente);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            db.clienteDAO().insert(cliente);
+        });
+    }
+    public static void update(Cliente cliente) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+        db.clienteDAO().update(cliente);
+        });
+    }
+
+    public static void delete(Cliente cliente) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            db.clienteDAO().delete(cliente);
+        });
     }
 }
