@@ -3,15 +3,20 @@ package br.edu.uniritter.aula224_1;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -57,6 +62,27 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         });
 
         UserServices.loadUsersFromRepository(this);
+        ImageView imageView = findViewById(R.id.imageView);
+
+        imageView.setImageDrawable(getResources().getDrawable(R.drawable.fotinha));
+
+        //Picasso.get().load("https://lh3.googleusercontent.com/a/ACg8ocI5vbDzTpNIkDOpBQkDsDqRpFrUQsMj3VeOyVQ9ft-LMQ4vG5RrPg=s288-c-no").into(imageView);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.intent.action.VIEW");
+
+        filter.addCategory("android.intent.category.DEFAULT");
+        filter.addCategory("android.intent.category.BROWSABLE");
+        filter.addDataAuthority("aula.com",null);
+        filter.addDataPath("/",0);
+        filter.addDataScheme("http");
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d("SplashActivity", "onReceive: "+intent.getAction());
+            }
+        };
+        registerReceiver(receiver, filter);
 
     }
 
